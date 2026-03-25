@@ -163,12 +163,12 @@ Images are saved **only when a new object is detected**, avoiding redundancy.
 
 ## Future Improvements
 
-* 🔄 Object tracking (DeepSORT)
-* 🌐 API deployment (FastAPI)
-* 📲 Real-time alerts (Telegram / Webhooks)
-* 🧠 Custom-trained models (domain-specific detection)
-* ⚡ Edge deployment (Jetson Nano / Raspberry Pi)
-* 📊 Detection logging (JSON + analytics)
+*  Object tracking (DeepSORT)
+*  API deployment (FastAPI)
+*  Real-time alerts (Telegram / Webhooks)
+*  Custom-trained models (domain-specific detection)
+*  Edge deployment (Jetson Nano / Raspberry Pi)
+*  Detection logging (JSON + analytics)
 
 ---
 
@@ -187,7 +187,7 @@ A critical concept for real-world applications such as:
 
 ---
 
-## 👨‍💻Author
+## Author
 
 Developed as part of practical exploration in Computer Vision, focusing on:
 
