@@ -1,9 +1,9 @@
 # OOP_Project
 Real-Time Object Detection with Event-Based Capture
 
-# 🚀 VisionGuard: Real-Time Object Detection & Event Trigger System
+# VisionGuard: Real-Time Object Detection & Event Trigger System
 
-## 📌 Overview
+## Overview
 
 VisionGuard is a real-time computer vision system designed to detect objects and trigger actions based on meaningful events.
 
@@ -13,19 +13,19 @@ This project demonstrates how to move from simple object detection to a **modula
 
 ---
 
-## 🧠 Key Features
+## Key Features
 
-* 🔍 Real-time object detection using YOLOv8 (Ultralytics)
-* 🧱 Modular OOP architecture (clean and extensible)
-* ⚡ Event-based triggering (no redundant outputs)
-* 📸 Automatic image capture on new detections
-* 🚫 Class filtering (e.g., ignoring "person")
-* 📊 Side-by-side visualization (raw vs processed frame)
-* 🧪 Jupyter Notebook support for rapid experimentation
+*  Real-time object detection using YOLOv8 (Ultralytics)
+*  Modular OOP architecture (clean and extensible)
+*  Event-based triggering (no redundant outputs)
+*  Automatic image capture on new detections
+*  Class filtering (e.g., ignoring "person")
+*  Side-by-side visualization (raw vs processed frame)
+*  Jupyter Notebook support for rapid experimentation
 
 ---
 
-## 🏗️ Project Structure
+##  Project Structure
 
 ```
 vision_project/
@@ -50,7 +50,7 @@ vision_project/
 
 ---
 
-## ⚙️ Architecture
+##  Architecture
 
 The system is designed with **separation of responsibilities**:
 
@@ -74,7 +74,7 @@ This structure allows easy extension to:
 
 ---
 
-## 🎯 Use Case Example
+##  Use Case Example
 
 The current implementation:
 
@@ -85,12 +85,12 @@ The current implementation:
 Example output:
 
 ```
-📸 New detection: ['cell phone'] → outputs/detect_1700000000.jpg
+ New detection: ['cell phone'] → outputs/detect_1700000000.jpg
 ```
 
 ---
 
-## 📸 How It Works
+##  How It Works
 
 1. Capture frame from webcam
 2. Run object detection (YOLO)
@@ -101,7 +101,7 @@ Example output:
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 * Python
 * OpenCV
@@ -110,7 +110,7 @@ Example output:
 
 ---
 
-## ▶️ Getting Started
+##  Getting Started
 
 ### 1. Install dependencies
 
@@ -130,14 +130,14 @@ Run all cells to start the real-time detection system.
 
 ---
 
-## 🎮 Controls
+##  Controls
 
 * Stop execution using Jupyter's stop button (⏹️)
 * The system will safely release the camera after interruption
 
 ---
 
-## 📦 Outputs
+##  Outputs
 
 Detected events are saved automatically:
 
@@ -151,7 +151,7 @@ Images are saved **only when a new object is detected**, avoiding redundancy.
 
 ---
 
-## ⚠️ Notes & Limitations
+##  Notes & Limitations
 
 * The default YOLO model (COCO dataset) may not accurately detect:
 
@@ -161,7 +161,7 @@ Images are saved **only when a new object is detected**, avoiding redundancy.
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 * 🔄 Object tracking (DeepSORT)
 * 🌐 API deployment (FastAPI)
@@ -172,7 +172,7 @@ Images are saved **only when a new object is detected**, avoiding redundancy.
 
 ---
 
-## 💡 Key Insight
+##  Key Insight
 
 This project goes beyond basic object detection by implementing:
 
@@ -187,7 +187,7 @@ A critical concept for real-world applications such as:
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻Author
 
 Developed as part of practical exploration in Computer Vision, focusing on:
 
@@ -196,10 +196,4 @@ Developed as part of practical exploration in Computer Vision, focusing on:
 * intelligent event handling
 
 ---
-
-## ⭐ Final Note
-
-This is not just a detection demo.
-
-It is a **foundation for building real-world intelligent vision systems**.
 
