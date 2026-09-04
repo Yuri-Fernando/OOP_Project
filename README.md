@@ -203,3 +203,53 @@ This is not just a detection demo.
 
 It is a **foundation for building real-world intelligent vision systems**.
 
+---
+
+## 🧬 Version 2.0 — Architecture Extension
+
+V1 stops at YOLO: detect, filter, draw. V2 keeps that pipeline untouched and adds a second
+CNN stage on top of it — a **ResNet** classifier running on each detected object's crop.
+
+```
+VisionGuard
+     |
+     +-- YOLOv8 -> Object Detection
+     |
+     +-- ResNet -> Image Classification / Feature Extraction
+```
+
+### What was added
+
+* `src/core/classifier_v2.py` — **ResNetClassifier**: wraps a pretrained `torchvision` ResNet
+  (`resnet18` by default, `resnet34`/`resnet50` also supported) and exposes:
+  * `classify(crop)` → top-k ImageNet labels + confidence for a detected object's crop.
+  * `extract_features(crop)` → the penultimate-layer embedding (feature extraction), kept
+    available for future similarity/retrieval use cases.
+* `src/core/pipeline_v2.py` — **VisionPipelineV2**: subclasses `VisionPipeline` (V1 stays
+  untouched) and, after the existing detect → filter → draw flow, runs the ResNet classifier
+  on every target detection's bounding-box crop, attaching a `resnet_classification` field to
+  each target.
+* `demo_v2.ipynb` — same webcam loop structure as `demo.ipynb`, now printing the ResNet
+  top-3 classification alongside the raw YOLO/COCO label for every new detection.
+* `requirements_v2.txt` — adds `torch` and `torchvision` to the V1 dependency set.
+
+### Why
+
+Object detection (YOLO) answers *"where is it, and what COCO class is it?"*. Adding a
+residual-network classification stage on top of each crop answers a finer-grained question —
+a more specific ImageNet category, plus an embedding that can later support similarity search
+between detected objects — without touching or slowing down the existing detection path
+(V2 is strictly additive: V1's `Detector`, `DetectionProcessor`, `Visualizer` and
+`VisionPipeline` are unchanged).
+
+### V1 vs V2
+
+| | V1 | V2 |
+|---|---|---|
+| Stages | YOLOv8 detection only | YOLOv8 detection + ResNet classification |
+| Output per detection | COCO label + confidence | COCO label + ResNet top-k ImageNet labels |
+| Feature extraction | — | ResNet embedding via `extract_features` |
+
+Run `demo_v2.ipynb` the same way as `demo.ipynb` (webcam required); install
+`requirements_v2.txt` first.
+
