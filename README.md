@@ -1,255 +1,529 @@
-# OOP_Project
-Real-Time Object Detection with Event-Based Capture
+# VisionGuard — Real-Time Object Detection & Event Trigger System
 
-# 🚀 VisionGuard: Real-Time Object Detection & Event Trigger System
+### Computer Vision · YOLOv8 · OpenCV · Event-Driven Vision · Object Detection · Python
 
-## 📌 Overview
+## Status
 
-VisionGuard is a real-time computer vision system designed to detect objects and trigger actions based on meaningful events.
+🟢 **Concluído — Projeto de portfólio / Computer Vision**
 
-Instead of continuously processing and storing redundant detections, the system applies an **event-driven approach**, capturing outputs only when new target objects appear in the scene.
+O **VisionGuard** é um sistema de visão computacional em tempo real desenvolvido para detectar objetos e acionar ações apenas quando ocorre um **evento relevante**, evitando o processamento lógico e armazenamento de detecções redundantes.
 
-This project demonstrates how to move from simple object detection to a **modular, scalable, and intelligent vision pipeline**.
-
----
-
-## 🧠 Key Features
-
-* 🔍 Real-time object detection using YOLOv8 (Ultralytics)
-* 🧱 Modular OOP architecture (clean and extensible)
-* ⚡ Event-based triggering (no redundant outputs)
-* 📸 Automatic image capture on new detections
-* 🚫 Class filtering (e.g., ignoring "person")
-* 📊 Side-by-side visualization (raw vs processed frame)
-* 🧪 Jupyter Notebook support for rapid experimentation
+O projeto utiliza **YOLOv8**, OpenCV e uma arquitetura modular orientada a objetos para transformar a detecção convencional em um pipeline de visão baseado em eventos.
 
 ---
 
-## 🏗️ Project Structure
+## Sobre o Projeto
 
+Em vez de processar e armazenar continuamente todas as detecções realizadas pela câmera, o sistema mantém o estado observado e gera uma saída somente quando identifica um **novo objeto-alvo**.
+
+Fluxo principal:
+
+```text
+Webcam
+   ↓
+Frame
+   ↓
+YOLOv8
+   ↓
+Detecções
+   ↓
+Filtro de Classes
+   ↓
+Comparação com Estado Anterior
+   ↓
+Novo Objeto?
+   ├── Não → Continua monitorando
+   └── Sim → Evento
+                    ↓
+              Captura de imagem
+                    ↓
+              Visualização / Output
 ```
+
+Essa abordagem reduz saídas redundantes e cria uma base para sistemas orientados a eventos.
+
+---
+
+# Objetivo
+
+Demonstrar, de forma prática, como evoluir de um pipeline tradicional de detecção de objetos para uma arquitetura capaz de:
+
+- Detectar objetos em tempo real;
+- Filtrar classes relevantes;
+- Identificar novos eventos;
+- Evitar capturas redundantes;
+- Organizar o código em módulos independentes;
+- Separar inferência, regras de negócio e visualização;
+- Criar uma base extensível para alertas, APIs e automações.
+
+---
+
+# Funcionalidades
+
+- Detecção de objetos em tempo real com **YOLOv8**;
+- Captura de vídeo por webcam;
+- Arquitetura modular baseada em OOP;
+- Processamento orientado a eventos;
+- Identificação de novos objetos;
+- Captura automática de imagens;
+- Filtro de classes;
+- Ignorar classes irrelevantes, como `person`;
+- Visualização lado a lado de frame original e processado;
+- Suporte a Jupyter Notebook;
+- Armazenamento automático das detecções relevantes.
+
+---
+
+# Arquitetura
+
+O projeto foi organizado com separação clara de responsabilidades.
+
+```text
+                    ┌──────────────────┐
+                    │     Webcam       │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │     Pipeline     │
+                    │  Orchestration    │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │     Detector     │
+                    │     YOLOv8       │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │    Processor     │
+                    │ Filtering / Rules│
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │ Event Detection  │
+                    │ State Comparison  │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │    Visualizer    │
+                    │ Boxes / Labels   │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │      Output      │
+                    │ Capture / Images │
+                    └──────────────────┘
+```
+
+---
+
+# Componentes
+
+## Detector
+
+Arquivo:
+
+```text
+src/core/detector.py
+```
+
+Responsável por:
+
+- Carregar o modelo YOLO;
+- Executar inferência;
+- Processar os frames;
+- Retornar as detecções.
+
+---
+
+## Processor
+
+Arquivo:
+
+```text
+src/core/processor.py
+```
+
+Responsável por:
+
+- Aplicar regras de negócio;
+- Filtrar classes;
+- Ignorar objetos irrelevantes;
+- Selecionar objetos-alvo;
+- Comparar o estado atual com o anterior;
+- Determinar quando um evento deve ser disparado.
+
+---
+
+## Visualizer
+
+Arquivo:
+
+```text
+src/core/visualizer.py
+```
+
+Responsável por:
+
+- Desenhar bounding boxes;
+- Exibir labels;
+- Preparar a visualização dos frames;
+- Comparar frame original e processado.
+
+---
+
+## Pipeline
+
+Arquivo:
+
+```text
+src/core/pipeline.py
+```
+
+Responsável por integrar os demais componentes em um fluxo único.
+
+```text
+Capture
+   ↓
+Detect
+   ↓
+Process
+   ↓
+Evaluate Event
+   ↓
+Visualize
+   ↓
+Save Output
+```
+
+---
+
+# Event-Driven Detection
+
+O principal diferencial do VisionGuard está na lógica orientada a eventos.
+
+Em um sistema convencional:
+
+```text
+Frame 1 → Detecção → Salvar
+Frame 2 → Detecção → Salvar
+Frame 3 → Detecção → Salvar
+Frame 4 → Detecção → Salvar
+```
+
+Isso pode gerar grande quantidade de informações redundantes.
+
+No VisionGuard:
+
+```text
+Frame 1 → Objeto detectado
+Frame 2 → Mesmo objeto → Ignorar
+Frame 3 → Mesmo objeto → Ignorar
+Frame 4 → Novo objeto → EVENTO
+```
+
+Resultado:
+
+```text
+Novo objeto
+   ↓
+Evento
+   ↓
+Captura
+   ↓
+Output
+```
+
+Essa lógica cria uma base para aplicações de monitoramento em que o evento, e não cada frame, é o principal elemento de interesse.
+
+---
+
+# Exemplo de Uso
+
+A implementação atual considera objetos como:
+
+```text
+cell phone
+```
+
+como alvo de detecção, enquanto classes irrelevantes podem ser ignoradas.
+
+Exemplo:
+
+```text
+New detection: ['cell phone']
+        ↓
+outputs/detect_1700000000.jpg
+```
+
+O arquivo é salvo somente quando um novo objeto relevante é identificado.
+
+---
+
+# Casos de Uso
+
+A arquitetura pode servir como base para:
+
+### Surveillance
+
+Captura apenas quando novos objetos ou eventos relevantes surgem.
+
+### Industrial Monitoring
+
+Monitoramento orientado a eventos em ambientes industriais.
+
+### Robotics
+
+Percepção baseada em mudanças significativas no ambiente.
+
+### Smart Automation
+
+Acionamento de workflows a partir de eventos visuais.
+
+### Event-Driven Vision
+
+Integração de visão computacional com:
+
+- APIs;
+- Webhooks;
+- Alertas;
+- Mensageria;
+- Sistemas de automação.
+
+---
+
+# Tecnologias
+
+| Categoria | Tecnologia |
+|---|---|
+| Linguagem | Python |
+| Computer Vision | OpenCV |
+| Object Detection | Ultralytics YOLOv8 |
+| Visualização | Matplotlib |
+| Experimentação | Jupyter Notebook |
+| Arquitetura | Object-Oriented Programming |
+| Paradigma | Event-Driven Processing |
+
+---
+
+# Estrutura do Projeto
+
+```text
 vision_project/
 │
 ├── src/
 │   ├── core/
-│   │   ├── detector.py       # Model inference (YOLO)
-│   │   ├── processor.py      # Business logic & filtering
-│   │   ├── visualizer.py     # Drawing bounding boxes
-│   │   └── pipeline.py       # End-to-end orchestration
+│   │   ├── detector.py
+│   │   ├── processor.py
+│   │   ├── visualizer.py
+│   │   └── pipeline.py
 │   │
 │   └── utils/
-│       └── helpers.py        # Utility functions (optional)
+│       └── helpers.py
 │
 ├── notebooks/
-│   └── demo.ipynb            # Main demo (Jupyter)
+│   └── demo.ipynb
 │
-├── outputs/                  # Saved detection images
+├── outputs/
+│   ├── detect_1700000000.jpg
+│   └── detect_1700000005.jpg
+│
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## ⚙️ Architecture
+# Como Executar
 
-The system is designed with **separation of responsibilities**:
+## Requisitos
 
-* **Detector**
-  Handles model loading and inference using YOLO.
+- Python;
+- Webcam;
+- Jupyter Notebook ou Jupyter Lab;
+- Dependências do projeto.
 
-* **Processor**
-  Applies filtering logic, ignores irrelevant classes, and selects target objects.
-
-* **Visualizer**
-  Draws bounding boxes and labels on frames.
-
-* **Pipeline**
-  Connects all components into a unified processing flow.
-
-This structure allows easy extension to:
-
-* new models
-* new detection rules
-* new output systems (API, alerts, logging)
-
----
-
-## 🎯 Use Case Example
-
-The current implementation:
-
-* Detects objects such as **cell phones**
-* Ignores irrelevant detections (e.g., "person")
-* Saves an image **only when a new object appears**
-
-Example output:
-
-```
-📸 New detection: ['cell phone'] → outputs/detect_1700000000.jpg
-```
-
----
-
-## 📸 How It Works
-
-1. Capture frame from webcam
-2. Run object detection (YOLO)
-3. Filter detections based on rules
-4. Compare with previous state
-5. Trigger event if new object is detected
-6. Save image + display result
-
----
-
-## 🛠️ Tech Stack
-
-* Python
-* OpenCV
-* Ultralytics YOLOv8
-* Matplotlib (for notebook visualization)
-
----
-
-## ▶️ Getting Started
-
-### 1. Install dependencies
+## Instalar dependências
 
 ```bash
 pip install ultralytics opencv-python matplotlib
 ```
 
-### 2. Run the project
+## Executar
 
-Open the notebook:
+Abra:
 
-```bash
+```text
 notebooks/demo.ipynb
 ```
 
-Run all cells to start the real-time detection system.
+Execute todas as células para iniciar o sistema de detecção.
 
 ---
 
-## 🎮 Controls
+# Controles
 
-* Stop execution using Jupyter's stop button (⏹️)
-* The system will safely release the camera after interruption
+Durante a execução pelo Jupyter:
+
+- Utilize o botão de parada do notebook para interromper o processamento;
+- O sistema deve liberar a câmera após a interrupção.
 
 ---
 
-## 📦 Outputs
+# Outputs
 
-Detected events are saved automatically:
+As imagens associadas a novos eventos são armazenadas automaticamente em:
 
-```
+```text
 outputs/
 ├── detect_1700000000.jpg
 ├── detect_1700000005.jpg
+└── ...
 ```
 
-Images are saved **only when a new object is detected**, avoiding redundancy.
+O sistema evita salvar imagens quando a detecção corresponde ao mesmo estado observado anteriormente.
 
 ---
 
-## ⚠️ Notes & Limitations
+# O que este projeto demonstra
 
-* The default YOLO model (COCO dataset) may not accurately detect:
-
-  * Smartwatches (often classified as "cell phone")
-* Performance in Jupyter is not real-time due to rendering constraints
-* For full performance, consider running as a `.py` script
-
----
-
-## 🚀 Future Improvements
-
-* 🔄 Object tracking (DeepSORT)
-* 🌐 API deployment (FastAPI)
-* 📲 Real-time alerts (Telegram / Webhooks)
-* 🧠 Custom-trained models (domain-specific detection)
-* ⚡ Edge deployment (Jetson Nano / Raspberry Pi)
-* 📊 Detection logging (JSON + analytics)
+- Object Detection;
+- YOLOv8;
+- Computer Vision;
+- OpenCV;
+- Processamento em tempo real;
+- Arquitetura orientada a objetos;
+- Separação de responsabilidades;
+- Event-Driven Architecture;
+- State Comparison;
+- Filtering Logic;
+- Automatic Event Triggering;
+- Processamento de imagens;
+- Integração entre inferência e regras de negócio;
+- Construção de pipelines modulares de visão computacional.
 
 ---
 
-## 💡 Key Insight
+# Limitações
 
-This project goes beyond basic object detection by implementing:
-
-> **Event-driven vision systems**
-
-A critical concept for real-world applications such as:
-
-* Surveillance systems
-* Industrial monitoring
-* Robotics perception
-* Smart automation pipelines
+- A performance em Jupyter pode não representar a velocidade máxima possível devido às limitações de renderização do notebook;
+- Para processamento contínuo com maior desempenho, uma execução como script Python pode ser mais adequada;
+- O modelo YOLO utilizado é baseado no dataset COCO;
+- Algumas classes podem não ser identificadas com precisão suficiente para aplicações específicas;
+- Smartwatches, por exemplo, podem ser classificados como `cell phone`;
+- O sistema atual utiliza comparação de estado simples e não implementa tracking persistente entre objetos.
 
 ---
 
-## 👨‍💻 Author
+# Melhorias Futuras
 
-Developed as part of practical exploration in Computer Vision, focusing on:
-
-* modular system design
-* real-time processing
-* intelligent event handling
+- Object Tracking com DeepSORT;
+- Tracking multiobjeto;
+- API com FastAPI;
+- Alertas via Telegram;
+- Integração com Webhooks;
+- Logging estruturado;
+- Persistência dos eventos em banco de dados;
+- Dashboard de eventos;
+- Modelos customizados para objetos específicos;
+- Edge deployment;
+- Execução em Jetson Nano;
+- Execução em Raspberry Pi;
+- Integração com sistemas de automação;
+- Pipeline de analytics sobre os eventos detectados.
 
 ---
 
-## ⭐ Final Note
+# Status Final
 
-This is not just a detection demo.
+🟢 **Concluído**
 
-It is a **foundation for building real-world intelligent vision systems**.
+A versão atual possui:
+
+- ✅ YOLOv8;
+- ✅ OpenCV;
+- ✅ Detecção em tempo real;
+- ✅ Arquitetura OOP;
+- ✅ Filtro de classes;
+- ✅ Event-based triggering;
+- ✅ Comparação com estado anterior;
+- ✅ Captura automática de novas detecções;
+- ✅ Visualização;
+- ✅ Notebook de demonstração;
+- ✅ Armazenamento de outputs;
+- ✅ Estrutura modular.
+
+O projeto permanece como uma base para evolução de sistemas de visão computacional **orientados a eventos**, podendo ser expandido para monitoramento, robótica, automação e sistemas inteligentes.
 
 ---
 
-## 🧬 Version 2.0 — Architecture Extension
+# Licença
 
-V1 stops at YOLO: detect, filter, draw. V2 keeps that pipeline untouched and adds a second
-CNN stage on top of it — a **ResNet** classifier running on each detected object's crop.
+Consulte a licença definida no repositório.
 
-```
+---
+
+---
+
+# Versão 2.0 — Extensão de Arquitetura
+
+A V1 para no YOLO: detectar, filtrar, desenhar. A V2 mantém esse pipeline intacto e adiciona
+um segundo estágio de CNN sobre ele — um classificador **ResNet** rodando sobre o recorte de
+cada objeto detectado.
+
+```text
 VisionGuard
-     |
-     +-- YOLOv8 -> Object Detection
-     |
-     +-- ResNet -> Image Classification / Feature Extraction
+     │
+     ├── YOLOv8 → Object Detection
+     │
+     └── ResNet → Image Classification / Feature Extraction
 ```
 
-### What was added
+## O que foi adicionado
 
-* `src/core/classifier_v2.py` — **ResNetClassifier**: wraps a pretrained `torchvision` ResNet
-  (`resnet18` by default, `resnet34`/`resnet50` also supported) and exposes:
-  * `classify(crop)` → top-k ImageNet labels + confidence for a detected object's crop.
-  * `extract_features(crop)` → the penultimate-layer embedding (feature extraction), kept
-    available for future similarity/retrieval use cases.
-* `src/core/pipeline_v2.py` — **VisionPipelineV2**: subclasses `VisionPipeline` (V1 stays
-  untouched) and, after the existing detect → filter → draw flow, runs the ResNet classifier
-  on every target detection's bounding-box crop, attaching a `resnet_classification` field to
-  each target.
-* `demo_v2.ipynb` — same webcam loop structure as `demo.ipynb`, now printing the ResNet
-  top-3 classification alongside the raw YOLO/COCO label for every new detection.
-* `requirements_v2.txt` — adds `torch` and `torchvision` to the V1 dependency set.
+- `src/core/classifier_v2.py` — **ResNetClassifier**: encapsula uma ResNet pré-treinada do
+  `torchvision` (`resnet18` por padrão, com suporte a `resnet34`/`resnet50`) e expõe:
+  - `classify(crop)` → top-k rótulos ImageNet + confiança para o recorte de um objeto detectado;
+  - `extract_features(crop)` → embedding da penúltima camada (feature extraction), disponível
+    para casos futuros de busca por similaridade.
+- `src/core/pipeline_v2.py` — **VisionPipelineV2**: estende `VisionPipeline` (V1 permanece
+  intacta) e, após o fluxo existente de detectar → filtrar → desenhar, roda o classificador
+  ResNet sobre o recorte de cada detecção-alvo, adicionando o campo `resnet_classification`.
+- `demo_v2.ipynb` — mesmo fluxo de webcam do `demo.ipynb`, agora exibindo a classificação
+  ResNet ao lado do rótulo bruto do YOLO/COCO a cada novo evento.
+- `requirements_v2.txt` — adiciona `torch` e `torchvision` às dependências da V1.
 
-### Why
+## Por quê
 
-Object detection (YOLO) answers *"where is it, and what COCO class is it?"*. Adding a
-residual-network classification stage on top of each crop answers a finer-grained question —
-a more specific ImageNet category, plus an embedding that can later support similarity search
-between detected objects — without touching or slowing down the existing detection path
-(V2 is strictly additive: V1's `Detector`, `DetectionProcessor`, `Visualizer` and
-`VisionPipeline` are unchanged).
+A detecção de objetos (YOLO) responde *"onde está, e qual classe do COCO é?"*. Adicionar um
+estágio de classificação com rede residual sobre cada recorte responde uma pergunta mais
+específica — uma categoria ImageNet mais granular, além de um embedding que pode futuramente
+sustentar busca por similaridade entre objetos detectados — sem alterar nem impactar o
+caminho de detecção já existente (a V2 é estritamente aditiva: `Detector`, `DetectionProcessor`,
+`Visualizer` e `VisionPipeline` da V1 continuam inalterados).
 
-### V1 vs V2
+## V1 vs V2
 
 | | V1 | V2 |
 |---|---|---|
-| Stages | YOLOv8 detection only | YOLOv8 detection + ResNet classification |
-| Output per detection | COCO label + confidence | COCO label + ResNet top-k ImageNet labels |
-| Feature extraction | — | ResNet embedding via `extract_features` |
+| Estágios | Apenas detecção YOLOv8 | Detecção YOLOv8 + classificação ResNet |
+| Saída por detecção | Rótulo COCO + confiança | Rótulo COCO + top-k rótulos ImageNet (ResNet) |
+| Feature extraction | — | Embedding ResNet via `extract_features` |
 
-Run `demo_v2.ipynb` the same way as `demo.ipynb` (webcam required); install
-`requirements_v2.txt` first.
+Execute `demo_v2.ipynb` da mesma forma que `demo.ipynb` (requer webcam); instale
+`requirements_v2.txt` antes.
 
+---
+
+# Autor
+
+**Yuri Fernando Dubbern**
+
+AI/ML Engineer · Computer Vision · Machine Learning · Intelligent Automation
+
+[LinkedIn](https://www.linkedin.com/in/yuridubbern) · [GitHub](https://github.com/Yuri-Fernando) · [Lattes](http://lattes.cnpq.br/7151392692642166) · [Linktree](https://linktr.ee/yuri.f.dubbern)
