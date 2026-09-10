@@ -520,6 +520,63 @@ Execute `demo_v2.ipynb` da mesma forma que `demo.ipynb` (requer webcam); instale
 
 ---
 
+# Versão 3.0 — Adversarial Computer Vision
+
+A V2 respondeu *"o que é este objeto?"* com mais precisão (ResNet). A V3
+pergunta *"quão fácil é enganar essa resposta?"* — e depois torna o modelo
+mais difícil de enganar. A detecção YOLO (V1) e a classificação ResNet (V2)
+continuam intactas; a V3 é uma camada de avaliação e hardening por cima
+(`src/adversarial/`).
+
+## O que foi adicionado
+
+- `src/adversarial/fgsm.py` — **FGSM** (Goodfellow et al., 2015) sobre as
+  logits do classificador, com o gradiente real do modelo.
+- `src/adversarial/pgd.py` — **PGD** (Madry et al., 2018), o ataque de
+  referência ("first-order adversary"), com random start e projeção
+  L-infinito.
+- `src/adversarial/patch.py` — **adversarial patch**: recorte quadrado
+  otimizado (dirigido ou não), modelando adesivos físicos.
+- `src/adversarial/corruptions.py` — baselines **não-adversariais**
+  (ruído gaussiano, brilho, blur) para separar fragilidade geral de
+  fragilidade adversarial específica.
+- `src/adversarial/robustness_eval.py` — `evaluate_robustness` (acurácia
+  limpa vs. cada ataque/corrupção no mesmo `epsilon`) + `adversarial_gap`
+  (quanto o PGD é pior que ruído gaussiano do mesmo tamanho).
+- `src/adversarial/adversarial_training.py` — **adversarial training**
+  (fine-tune em limpo + PGD).
+- `adversarial_v3.ipynb` — walkthrough com ResNet-18 (mesmo backbone da V2).
+- `requirements_v3.txt`, 5 testes (`tests/test_adversarial.py`, CNN
+  minúsculo + tensores sintéticos, rápidos, mas exercitando os ataques
+  reais).
+
+## Fluxo
+
+```text
+imagem normal ──▶ YOLOv8 ──▶ crop ──▶ ResNet ──▶ classe
+imagem + δ (FGSM/PGD/patch) ──▶ ResNet ──▶ classe errada
+       │
+       ▼
+adversarial training ──▶ ResNet mais robusta
+```
+
+## Por quê
+
+Um classificador de visão em produção não é só *treinar → accuracy →
+deploy*. É *treinar → atacar → medir robustez → mitigar → monitorar*. A V3
+implementa esse ciclo. O módulo também alimenta o **robustness gate** do
+Argus (via ThemisAI `run_security_assessment`) — um modelo de visão frágil
+não é promovido a produção.
+
+## Integração com o portfólio
+
+Este é o caso de uso de **Adversarial Computer Vision** da trilha de AI
+Security centralizada no **ThemisAI** (`core/adversarial_ml/`). Ver também
+Credit Score (adversarial tabular), RL-PID-AGV (adversarial RL) e Churn
+(robustness testing).
+
+---
+
 # Autor
 
 **Yuri Fernando Dubbern**
